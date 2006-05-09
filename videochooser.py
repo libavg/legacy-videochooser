@@ -12,6 +12,14 @@ minVideoHeight = 60
 screenWidth = 1024
 screenHeight = 768
 
+shotNum = 0
+
+def on_key():
+    global shotNum
+    key = Player.getCurEvent().keystring
+    if key == "s":
+        shotNum += 1
+        Player.screenshot("videochooser"+str(shotNum)+".png")
 
 def init_video_nodes():
     global numVideos
@@ -23,7 +31,7 @@ def init_video_nodes():
 
 def get_video_files():
     global numVideos
-    videoDir = "/home/uzadow/libavg/libavg/src/test/enterprise/"
+    videoDir = "/Users/uzadow/Movies/Kingdom/"
     files = os.listdir(videoDir)
     numVideos = len(files)
     if numVideos > Player.getElementByID("main").getNumChildren():

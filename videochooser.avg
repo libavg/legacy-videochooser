@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE avg SYSTEM "../../libavg/doc/avg.dtd">
-<avg id="main" width="1024" height="768"> 
+<avg id="main" width="1024" height="768" onkeyup="on_key"> 
   <video id="video1" href="/mnt/beaujolais/data/videos/friends/Friends.-.1x02.-.Familienfreuden_by_dmm.avi" loop="true"/>
   <video id="video2" href="" loop="true"/>
   <video id="video3" href="" loop="true"/>
