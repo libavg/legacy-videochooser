@@ -1,7 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys, os, math, random, os
+import sys, os, math, random, stat
+
+# Change this to whereever libavg was installed on your computer.
 sys.path.append('/usr/local/lib/python2.3/site-packages/libavg')
 sys.path.append('/usr/local/lib/python2.4/site-packages/libavg')
 import avg
@@ -31,18 +33,25 @@ def init_video_nodes():
 
 def get_video_files():
     global numVideos
-    videoDir = "/Users/uzadow/Movies/Kingdom/"
+    global videoDir
+#    videoDir = "/Users/uzadow/libavg/libavg/src/test/enterprise/"
     files = os.listdir(videoDir)
     numVideos = len(files)
-    if numVideos > Player.getElementByID("main").getNumChildren():
-        numVideos = Player.getElementByID("main").getNumChildren()
+    curEntry = 0
     for i in range(numVideos):
-        curNode = Player.getElementByID("video"+str(i+1))
-        curNode.opacity = 1
-        curNode.href = videoDir+files[i]
-        curNode.width = minVideoWidth
-        curNode.height = minVideoHeight
-        curNode.play()
+        print videoDir+files[i]
+        if not(stat.S_ISDIR(os.stat(videoDir+files[i]).st_mode)):
+            curEntry+=1
+            if curEntry <= Player.getElementByID("main").getNumChildren():
+                curNode = Player.getElementByID("video"+str(curEntry))
+                curNode.opacity = 1
+                curNode.href = videoDir+files[i]
+                curNode.width = minVideoWidth
+                curNode.height = minVideoHeight
+                curNode.play()
+    numVideos = curEntry
+    if numVideos >= Player.getElementByID("main").getNumChildren():
+        numVideos = Player.getElementByID("main").getNumChildren()
 
 def position_videos(offset, videoWidth, videoHeight):
     def playing(x):
@@ -77,24 +86,29 @@ def onframe():
     offset = -(event.x*range)/screenWidth+10
     position_videos(offset, videoWidth, videoHeight)
 
-Player = avg.Player()
-Log = avg.Logger.get()
-Player.setResolution(1, 0, 0, 0) 
-Log.setCategories(Log.APP |
-                  Log.WARNING | 
-                  Log.PROFILE |
+if len(sys.argv) < 2:
+    print "Usage: videochooser.py <videodir>"
+else:
+    Player = avg.Player()
+    Log = avg.Logger.get()
+    Player.setResolution(1, 0, 0, 0) 
+    Log.setCategories(Log.APP |
+                      Log.WARNING | 
+                      Log.PROFILE |
 #                  Log.PROFILE_LATEFRAMES |
-                  Log.CONFIG
+                      Log.CONFIG
 #                  Log.MEMORY  |
 #                  Log.BLTS    
 #                  Log.EVENTS
-                  )
+                      )
 
-Player.loadFile("videochooser.avg")
-anim.init(Player)
-init_video_nodes()
-get_video_files()
-position_videos(-100, 80, 60)
-Player.setInterval(10, onframe)
-Player.setFramerate(100)
-Player.play()
+    videoDir = sys.argv[1]
+    print "Using "+videoDir+" as video directory." 
+    Player.loadFile("videochooser.avg")
+    anim.init(Player)
+    init_video_nodes()
+    get_video_files()
+    position_videos(-100, 80, 60)
+    Player.setInterval(10, onframe)
+    Player.setFramerate(100)
+    Player.play()
