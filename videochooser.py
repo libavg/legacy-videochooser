@@ -3,14 +3,12 @@
 
 import sys, os, math, random, stat
 
-# Change this to whereever libavg was installed on your computer.
-sys.path.append('/usr/local/lib/python2.3/site-packages/libavg')
-sys.path.append('/usr/local/lib/python2.4/site-packages/libavg')
 import avg
 import anim
 
+aspectRatio = 720.0/400.0
 minVideoWidth = 80
-minVideoHeight = 60
+minVideoHeight = minVideoWidth/aspectRatio 
 screenWidth = 1024
 screenHeight = 768
 
@@ -34,7 +32,6 @@ def init_video_nodes():
 def get_video_files():
     global numVideos
     global videoDir
-#    videoDir = "/Users/uzadow/libavg/libavg/src/test/enterprise/"
     files = os.listdir(videoDir)
     numVideos = len(files)
     curEntry = 0
@@ -80,7 +77,7 @@ def onframe():
     else:
         videoWidth = ((1-event.y/(screenHeight-40.0))*(screenWidth-minVideoWidth)+
                      minVideoWidth)
-    videoHeight = videoWidth*3/4.0
+    videoHeight = videoWidth/aspectRatio
     range = (numVideos)*(videoWidth+20)-screenWidth+20
 #    offset = -random.random()*range
     offset = -(event.x*range)/screenWidth+10
@@ -95,7 +92,7 @@ else:
     Log.setCategories(Log.APP |
                       Log.WARNING | 
                       Log.PROFILE |
-#                  Log.PROFILE_LATEFRAMES |
+                      Log.PROFILE_LATEFRAMES |
                       Log.CONFIG
 #                  Log.MEMORY  |
 #                  Log.BLTS    
@@ -108,7 +105,7 @@ else:
     anim.init(Player)
     init_video_nodes()
     get_video_files()
-    position_videos(-100, 80, 60)
+    position_videos(-100, minVideoWidth, minVideoHeight)
     Player.setInterval(10, onframe)
-    Player.setFramerate(100)
+    Player.setFramerate(25)
     Player.play()
