@@ -3,8 +3,8 @@
 
 import sys, os, math, random, stat
 
-import avg
-import anim
+from libavg import avg
+from libavg import anim
 
 aspectRatio = 720.0/400.0
 minVideoWidth = 80
